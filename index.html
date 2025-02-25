@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRM Reflections Calculator</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0077b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>SRM Reflections Calculator</h1>
+    <p>Calculate your potential SOL earnings from Solana Recovery Mission ($SRM) reflections</p>
+
+    <div class="input-group">
+        <label for="volume">Daily Trading Volume ($):</label>
+        <input type="number" id="volume" placeholder="Enter trading volume">
+    </div>
+
+    <div class="input-group">
+        <label for="tokens">Your $SRM Tokens:</label>
+        <input type="number" id="tokens" placeholder="Enter your SRM holdings">
+    </div>
+
+    <div class="input-group">
+        <label for="totalSupply">Total $SRM Supply:</label>
+        <input type="number" id="totalSupply" placeholder="Enter total SRM supply">
+    </div>
+
+    <button onclick="calculateReflections()">Calculate Reflections</button>
+
+    <div class="result" id="result">
+        <h3>Your Estimated Reflections</h3>
+        <p>Daily SOL Earnings: <span id="solEarnings">0</span> SOL</p>
+        <p>Ownership Percentage: <span id="percentage">0</span>%</p>
+        <p>Total Daily Reflection Pool: <span id="pool">0</span> SOL</p>
+    </div>
+
+    <script>
+        // Assuming 1 SOL = $150 USD (you'd need to fetch real-time price for accuracy)
+        const SOL_USD_RATE = 150;
+
+        function calculateReflections() {
+            const volume = parseFloat(document.getElementById('volume').value) || 0;
+            const tokens = parseFloat(document.getElementById('tokens').value) || 0;
+            const totalSupply = parseFloat(document.getElementById('totalSupply').value) || 0;
+
+            if (volume <= 0 || tokens <= 0 || totalSupply <= 0) {
+                alert('Please enter valid positive numbers for all fields');
+                return;
+            }
+
+            // Calculate fees (5% of trading volume)
+            const totalFeesUSD = volume * 0.05;
+            
+            // 50% of fees go to reflections
+            const reflectionPoolUSD = totalFeesUSD * 0.5;
+            const reflectionPoolSOL = reflectionPoolUSD / SOL_USD_RATE;
+
+            // Calculate user's share based on token ownership
+            const ownershipPercentage = (tokens / totalSupply) * 100;
+            const userReflectionsSOL = reflectionPoolSOL * (tokens / totalSupply);
+
+            // Display results
+            document.getElementById('solEarnings').textContent = userReflectionsSOL.toFixed(6);
+            document.getElementById('percentage').textContent = ownershipPercentage.toFixed(4);
+            document.getElementById('pool').textContent = reflectionPoolSOL.toFixed(6);
+            document.getElementById('result').style.display = 'block';
+
+            // Telegram Web App integration
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.expand();
+                window.Telegram.WebApp.MainButton
+                    .setText('Share Results')
+                    .show()
+                    .onClick(() => {
+                        const text = `My $SRM Reflections:\nDaily Earnings: ${userReflectionsSOL.toFixed(6)} SOL\nOwnership: ${ownershipPercentage.toFixed(4)}%\nFrom $${volume} volume`;
+                        window.Telegram.WebApp.sendData(text);
+                    });
+            }
+        }
+
+        // Telegram Web App initialization
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.ready();
+        }
+    </script>
+</body>
+</html>
