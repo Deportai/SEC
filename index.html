@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRM Reflections Calculator</title>
+    <title>$SEC Reflections Calculator</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -51,7 +51,7 @@
 </head>
 <body>
     <h1>SRM Reflections Calculator</h1>
-    <p>Calculate your potential SOL earnings from Solana Recovery Mission ($SRM) reflections</p>
+    <p>Calculate your potential SOL earnings from the Solana Earning Council $SEC reflections</p>
 
     <div class="input-group">
         <label for="volume">Daily Trading Volume ($):</label>
@@ -59,12 +59,12 @@
     </div>
 
     <div class="input-group">
-        <label for="tokens">Your $SRM Tokens:</label>
+        <label for="tokens">Your $SEC Tokens:</label>
         <input type="number" id="tokens" placeholder="Enter your SRM holdings">
     </div>
 
     <div class="input-group">
-        <label for="totalSupply">Total $SRM Supply:</label>
+        <label for="totalSupply">Total $SEC Supply:</label>
         <input type="number" id="totalSupply" placeholder="Enter total SRM supply">
     </div>
 
@@ -115,7 +115,7 @@
                     .setText('Share Results')
                     .show()
                     .onClick(() => {
-                        const text = `My $SRM Reflections:\nDaily Earnings: ${userReflectionsSOL.toFixed(6)} SOL\nOwnership: ${ownershipPercentage.toFixed(4)}%\nFrom $${volume} volume`;
+                        const text = `My $SEC Reflections:\nDaily Earnings: ${userReflectionsSOL.toFixed(6)} SOL\nOwnership: ${ownershipPercentage.toFixed(4)}%\nFrom $${volume} volume`;
                         window.Telegram.WebApp.sendData(text);
                     });
             }
