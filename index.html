@@ -2,84 +2,205 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>$SEC Reflections Calculator</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            /* Background with SECLogo.jpg and navy/gold-inspired gradient */
+            background: linear-gradient(135deg, rgba(0, 0, 139, 0.85), rgba(0, 0, 139, 0.85)), /* Navy blue */
+                        url('https://deportai.github.io/SEC/SECLogo.jpg') no-repeat center center;
+            background-size: contain; /* Fits full image without cropping */
+            color: #FFD700; /* Gold text for main content */
+            overflow: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #FFD700; /* Gold title */
+            text-align: center;
+            text-shadow: 0 2px 6px rgba(255, 215, 0, 0.5);
+            font-size: 28px;
+            margin-bottom: 10px;
+            animation: glow 2s infinite alternate;
+        }
+        p {
+            color: #DAA520; /* Goldenrod for subtitle, softer gold */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 139, 0.9); /* Navy blue with higher opacity */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
         }
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: bold;
+            color: #FFD700; /* Gold labels */
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         input {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid #4A4A90; /* Lighter navy for input border */
+            border-radius: 6px;
+            background: #1E1E4B; /* Darker navy for inputs */
+            color: #FFD700; /* Gold text in inputs */
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
-        .result {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-            display: none;
+        input:focus {
+            border-color: #FFD700; /* Gold glow on focus */
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            transform: scale(1.02);
+        }
+        input::placeholder {
+            color: #DAA520; /* Goldenrod for placeholders */
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        input:focus::placeholder {
+            opacity: 0.4;
         }
         button {
-            background-color: #0088cc;
-            color: white;
-            padding: 10px 20px;
+            background: linear-gradient(90deg, #FFD700, #DAA520); /* Gold to goldenrod gradient */
+            color: #00008B; /* Navy text for contrast */
+            padding: 14px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 0, 139, 0.2); /* Navy ripple */
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        button:hover::after {
+            width: 300px;
+            height: 300px;
         }
         button:hover {
-            background-color: #0077b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.5);
+        }
+        .result {
+            background: linear-gradient(145deg, #1E1E4B, #00008B); /* Navy gradient */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: none;
+            border: 1px solid #4A4A90; /* Lighter navy border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        .result::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15), transparent 70%); /* Gold shimmer */
+            animation: rotate 15s linear infinite;
+        }
+        .result h3 {
+            color: #FFD700; /* Gold header */
+            margin-top: 0;
+            font-size: 20px;
+            text-shadow: 0 1px 3px rgba(255, 215, 0, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+        .result p {
+            color: #DAA520; /* Goldenrod for results */
+            margin: 12px 0;
+            text-align: left;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .result span {
+            color: #FFD700; /* Gold for values */
+            font-weight: bold;
+            font-size: 18px;
+        }
+        @keyframes glow {
+            0% { text-shadow: 0 2px 6px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 2px 10px rgba(255, 215, 0, 0.8); }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <h1>$SEC Reflections Calculator</h1>
-    <p>Calculate your potential SOL earnings from the Solana Earning Council $SEC reflections</p>
+    <div class="container">
+        <h1>$SEC Reflections Calculator</h1>
+        <p>Calculate your potential SOL earnings from $SEC reflections</p>
 
-    <div class="input-group">
-        <label for="volume">Daily Trading Volume ($):</label>
-        <input type="number" id="volume" placeholder="Enter trading volume">
-    </div>
+        <div class="input-group">
+            <label for="volume">Daily Trading Volume ($):</label>
+            <input type="number" id="volume" placeholder="Enter trading volume">
+        </div>
 
-    <div class="input-group">
-        <label for="tokens">Your $SEC Tokens:</label>
-        <input type="number" id="tokens" placeholder="Enter your $SEC holdings">
-    </div>
+        <div class="input-group">
+            <label for="tokens">Your $SEC Tokens:</label>
+            <input type="number" id="tokens" placeholder="Enter your $SEC holdings">
+        </div>
 
-    <div class="input-group">
-        <label for="totalSupply">Total $SEC Supply:</label>
-        <input type="number" id="totalSupply" placeholder="Enter total $SEC supply">
-    </div>
+        <div class="input-group">
+            <label for="totalSupply">Total $SEC Supply:</label>
+            <input type="number" id="totalSupply" placeholder="Enter total $SEC supply">
+        </div>
 
-    <button onclick="calculateReflections()">Calculate Reflections</button>
+        <button onclick="calculateReflections()">Calculate Reflections</button>
 
-    <div class="result" id="result">
-        <h3>Your Estimated Reflections</h3>
-        <p>Daily SOL Earnings: <span id="solEarnings">0</span> SOL</p>
-        <p>Ownership Percentage: <span id="percentage">0</span>%</p>
-        <p>Total Daily Reflection Pool: <span id="pool">0</span> SOL</p>
+        <div class="result" id="result">
+            <h3>Your Estimated Reflections</h3>
+            <p>Daily SOL Earnings: <span id="solEarnings">0</span> SOL</p>
+            <p>Ownership Percentage: <span id="percentage">0</span>%</p>
+            <p>Total Daily Reflection Pool: <span id="pool">0</span> SOL</p>
+        </div>
     </div>
 
     <script>
-        // Assuming 1 SOL = $150 USD (you'd need to fetch real-time price for accuracy)
-        const SOL_USD_RATE = 150;
+        const SOL_USD_RATE = 150; // 1 SOL = $150 USD (static for now)
 
         function calculateReflections() {
             const volume = parseFloat(document.getElementById('volume').value) || 0;
@@ -91,24 +212,17 @@
                 return;
             }
 
-            // Calculate fees (5% of trading volume)
-            const totalFeesUSD = volume * 0.05;
-            
-            // 50% of fees go to reflections
-            const reflectionPoolUSD = totalFeesUSD * 0.5;
+            const totalFeesUSD = volume * 0.05; // 5% fees
+            const reflectionPoolUSD = totalFeesUSD * 0.5; // 50% to reflections
             const reflectionPoolSOL = reflectionPoolUSD / SOL_USD_RATE;
-
-            // Calculate user's share based on token ownership
             const ownershipPercentage = (tokens / totalSupply) * 100;
             const userReflectionsSOL = reflectionPoolSOL * (tokens / totalSupply);
 
-            // Display results
             document.getElementById('solEarnings').textContent = userReflectionsSOL.toFixed(6);
             document.getElementById('percentage').textContent = ownershipPercentage.toFixed(4);
             document.getElementById('pool').textContent = reflectionPoolSOL.toFixed(6);
             document.getElementById('result').style.display = 'block';
 
-            // Telegram Web App integration
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.expand();
                 window.Telegram.WebApp.MainButton
@@ -121,7 +235,6 @@
             }
         }
 
-        // Telegram Web App initialization
         if (window.Telegram?.WebApp) {
             window.Telegram.WebApp.ready();
         }
